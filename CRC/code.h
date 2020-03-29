@@ -1,0 +1,2 @@
+void codage(int *message, int *generateur, int *resultat, int size_mess, int size_gen, int size_code);
+int decodage(int *code, int *generateur, int *message, int size_mess, int size_gen, int size_code);
