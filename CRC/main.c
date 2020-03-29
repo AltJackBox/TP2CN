@@ -34,6 +34,7 @@ int main (int argc, char * argv[]){
                     printf("%d ", code[i]);
                 }
                 printf("\n");
+                printf("\n");
                 return 1;
         } else if ((mode == 'D') || (mode == 'd')){
                 // Lecture de C(X)
