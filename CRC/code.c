@@ -14,8 +14,8 @@ void codage(int *message, int *generateur, int *resultat, int size_mess, int siz
     // Afin d'effectuer le codage, nous effectuons une division euclidienne entre des mots binaires, représentés sous forme de tableaux d'entiers.
     // Le tableau resultat est utilisé afin d'effectuer le calcul du reste de la division entre T et G
     // Au début de l'algorithme, il est initialisé de telle sorte que resultat représente T (le dividende).
-    // Le tableau resultat est modifié par des additions modulo 2 (Xor) successives avec G, et à la fin de la boucle do while, les d derniers 
-    // éléments du tableau contiennent le reste de la division euclidienne
+    // Le tableau resultat est modifié par des additions modulo 2 (Xor) successives avec G, et à la fin de la boucle do while, resultat contient le 
+    // reste de la division euclidienne de T par G, ce qui permet de construire le code de D
 
     for (int i = 0; i < size_mess; i++){
         resultat[i] = message[i];
@@ -58,7 +58,7 @@ int decodage(int *code, int *generateur, int *message, int size_mess, int size_g
     // Afin de réaliser le décodage, nous réalisons une divison euclidienne entre le code et le polynôme générateur
     // Ici, nous devons également tester la présence ou non d'erreur lors de la transmission du message en vérifiant que 
     // Le reste calculé est égal à 0
-    // Nous utilisons ici le tableau code afin de réaliser les Xor avec G
+    // Nous utilisons ici le tableau code afin de réaliser les Xor avec G (c'est lui qui contient le reste de la divison euclidienne en fin d'algorithme)
 
     // Le message est contenu dans les size_mess premiers bits du code  
     for (int i = 0; i < size_mess; i++){
