@@ -44,7 +44,6 @@ void destructBin(binary b) {
 }
 
 void tradBin(int n, binary b) {
-    // printf("1!\n");
     int idx = 0;
     while (n>0) {
         if (n%2 == 0) {
@@ -81,7 +80,7 @@ void afficherBin(binary b) {
 code creerCode(int k,char *tab) {
     int r = partieEntiereSup(log(k)/log(2))+1;
     code mot = (code)malloc(sizeof(struct Hamcode));
-    mot->tab = (int*)malloc(sizeof(int)*(r+pow(2,r-1)));
+    mot->tab = (int*)malloc(sizeof(int)*(pow(2,r)));
     mot->k = k;
     mot->r = r;
     int posMot = 0;
@@ -96,8 +95,19 @@ code creerCode(int k,char *tab) {
             posMot++;
         }
     }
-    for (; i<=r+pow(2,r-1); i++) {
+    for (; i<=pow(2,r); i++) {
         mot->tab[i-1] = 0;
+    }
+    return mot;
+}
+
+code creerDecode(char *tab) {
+    code mot = (code)malloc(sizeof(struct Hamcode));
+    mot->r = partieEntiereSup(log(strlen(tab))/log(2));
+    mot->k = strlen(tab) - mot->r;
+    mot->tab = (int*)malloc(sizeof(int)*(mot->k+mot->r));
+    for (int i=0; i<mot->k+mot->r; i++) {
+        mot->tab[i] = (int)(tab[i]-'0');
     }
     return mot;
 }
@@ -144,9 +154,9 @@ int *decode(code mot) {
             plusBin(res,temp);
         }
     }
-    afficherBin(res);
+    // afficherBin(res);
     int pos = tradBinInverse(res);
-    printf("pos = %d\n",pos);
+    // printf("pos = %d\n",pos);
     if (pos) {
         mot->tab[pos-1] = plus(mot->tab[pos-1],1);
     }
@@ -201,27 +211,42 @@ void afficherRes(code mot, int err) {
 }
 
 int main(int argc, char** argv) {
-    if (argc != 2) {
+    if (argc != 3) {
         printf("erreur\n");
         return 1;
     }
 
-    code mot = creerCode(strlen(argv[1]),argv[1]);
-    encode(mot);
-    afficher(mot);
+    if (argv[1][0] == 'c') {
+        code mot = creerCode(strlen(argv[2]),argv[2]);
+        encode(mot);
+        afficher(mot);
+    } else if (argv[1][0] == 'd'){
+        code mot = creerDecode(argv[2]);
+        int *dec = decode(mot);
+        printf("mot decode : ");
+        for (int i=0; i<mot->k; i++) {
+            printf("%d",dec[i]);
+        }
+        printf("\n");
+    } else if (argv[1][0] == 't') {
+        code mot = creerCode(strlen(argv[2]),argv[2]);
+        encode(mot);
+        afficher(mot);
 
-    srand(time(NULL));
-    int erreur = rand()%(mot->k+mot->r);
-    mot->tab[erreur] = plus(mot->tab[erreur],1);
-    afficherErr(mot,erreur);
+        srand(time(NULL));
+        int erreur = rand()%(mot->k+mot->r);
+        mot->tab[erreur] = plus(mot->tab[erreur],1);
+        afficherErr(mot,erreur);
 
-    int *dec = decode(mot);
-    afficherRes(mot,erreur);
-    printf("mot decode : ");
-    for (int i=0; i<mot->k; i++) {
-        printf("%d",dec[i]);
+        int *dec = decode(mot);
+        afficherRes(mot,erreur);
+        printf("mot decode : ");
+        for (int i=0; i<mot->k; i++) {
+            printf("%d",dec[i]);
+        }
+        printf("\n");
+    } else {
+        printf("erreur\n");
     }
-    printf("\n");
-    // destructCode(mot);
-    // free(dec);
+    return 0;
 }
